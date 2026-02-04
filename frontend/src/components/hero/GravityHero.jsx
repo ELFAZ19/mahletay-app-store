@@ -11,15 +11,16 @@ const GravityHero = () => {
     const renderRef = useRef(null);
     const runnerRef = useRef(null);
     const elementsRef = useRef([]);
-
-    // We'll track the dimensions to resizing
-    const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+    const [hoveredElement, setHoveredElement] = useState(null);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         
-        // 1. Setup Matter.js Engine
+        // Initial fade-in sequence
+        setTimeout(() => setLoaded(true), 100);
+
         const Engine = Matter.Engine,
               Render = Matter.Render,
               World = Matter.World,
@@ -27,7 +28,6 @@ const GravityHero = () => {
               Runner = Matter.Runner,
               Mouse = Matter.Mouse,
               MouseConstraint = Matter.MouseConstraint,
-              Composite = Matter.Composite,
               Events = Matter.Events,
               Vector = Matter.Vector;
 
@@ -36,8 +36,6 @@ const GravityHero = () => {
         engine.world.gravity.x = 0;
         engineRef.current = engine;
 
-        // 2. Setup Render (optional, mostly for debugging or background particles)
-        // We will overlay DOM elements, so the render canvas is for reference or decorative shapes
         const render = Render.create({
             element: sceneRef.current,
             engine: engine,
@@ -46,130 +44,138 @@ const GravityHero = () => {
                 height,
                 background: 'transparent',
                 wireframes: false,
-                showAngleIndicator: false
+                showAngleIndicator: false,
+                pixelRatio: window.devicePixelRatio
             }
         });
         renderRef.current = render;
 
-        // 3. Create Boundaries (Walls)
+        // Boundaries with softer bounce
         const wallOptions = { 
             isStatic: true, 
             render: { visible: false },
-            friction: 0.1,
-            restitution: 0.8 
+            friction: 0.05,
+            restitution: 0.6 // Softer bounce
         };
         const walls = [
-            Bodies.rectangle(width / 2, -50, width * 2, 100, wallOptions), // Top
-            Bodies.rectangle(width / 2, height + 50, width * 2, 100, wallOptions), // Bottom
-            Bodies.rectangle(width + 50, height / 2, 100, height * 2, wallOptions), // Right
-            Bodies.rectangle(-50, height / 2, 100, height * 2, wallOptions) // Left
+            Bodies.rectangle(width / 2, -60, width * 2, 120, wallOptions),
+            Bodies.rectangle(width / 2, height + 60, width * 2, 120, wallOptions),
+            Bodies.rectangle(width + 60, height / 2, 120, height * 2, wallOptions),
+            Bodies.rectangle(-60, height / 2, 120, height * 2, wallOptions)
         ];
         World.add(engine.world, walls);
 
-        // 4. Create Bodies for DOM Elements
-        // We need to wait for DOM elements to be rendered to measure them
-        // For now, we define them abstractly and sync them in the animation loop
         const physicsEntities = [];
         
-        // Helper to add body
         const addBodyForElement = (domId, options = {}) => {
             const el = document.getElementById(domId);
             if (!el) return null;
             
             const rect = el.getBoundingClientRect();
-            // Matter.js positions are center-based, DOM is top-left
             const x = rect.left + rect.width / 2;
             const y = rect.top + rect.height / 2;
             
             const body = Bodies.rectangle(x, y, rect.width, rect.height, {
-                restitution: 0.8, // Bouncy
-                frictionAir: 0.02, // Air resistance
-                friction: 0.1,
+                restitution: 0.6,
+                frictionAir: 0.015, // Slightly more air resistance for calmer motion
+                friction: 0.05,
                 density: options.density || 0.001,
-                render: { visible: false }, // We render via DOM
+                render: { visible: false },
                 ...options
             });
             
-            // Random initial velocity for drift
+            // Gentler initial velocity
             Matter.Body.setVelocity(body, {
-                x: (Math.random() - 0.5) * 2,
-                y: (Math.random() - 0.5) * 2
+                x: (Math.random() - 0.5) * 1.5,
+                y: (Math.random() - 0.5) * 1.5
             });
 
-            // Random rotation
-            Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.02);
+            // Very subtle rotation
+            Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.01);
 
             World.add(engine.world, body);
-            physicsEntities.push({ body, element: el });
+            physicsEntities.push({ body, element: el, id: domId });
+            elementsRef.current = physicsEntities;
             return body;
         };
 
-        // Add main elements
-        // Note: We need to give the browser a moment to layout the CSS before measuring
         setTimeout(() => {
-            addBodyForElement('hero-label', { density: 0.002 });
-            addBodyForElement('hero-title', { density: 0.005 });
-            addBodyForElement('hero-desc', { density: 0.002 });
-            addBodyForElement('hero-btn-1', { density: 0.01 });
-            addBodyForElement('hero-btn-2', { density: 0.01 });
+            addBodyForElement('hero-label', { density: 0.0015 });
+            addBodyForElement('hero-title', { density: 0.004 });
+            addBodyForElement('hero-desc', { density: 0.0018 });
+            addBodyForElement('hero-btn-1', { density: 0.008 });
+            addBodyForElement('hero-btn-2', { density: 0.008 });
             
-            // Add decorative circles (pure canvas physics objects)
-            for (let i = 0; i < 15; i++) {
+            // Decorative floating particles
+            for (let i = 0; i < 20; i++) {
+                const size = Math.random() * 15 + 5;
                 const circle = Bodies.circle(
                     Math.random() * width,
                     Math.random() * height,
-                    Math.random() * 20 + 5,
+                    size,
                     {
                         restitution: 0.9,
-                        frictionAir: 0.005,
+                        frictionAir: 0.003,
+                        density: 0.0005,
                         render: {
-                            fillStyle: Math.random() > 0.5 ? '#D4AF37' : '#E8CC6D',
-                            opacity: Math.random() * 0.5 + 0.1
+                            fillStyle: `rgba(212, 175, 55, ${Math.random() * 0.4 + 0.1})`,
+                            strokeStyle: 'transparent'
                         }
                     }
                 );
+                Matter.Body.setVelocity(circle, {
+                    x: (Math.random() - 0.5) * 0.8,
+                    y: (Math.random() - 0.5) * 0.8
+                });
                 World.add(engine.world, circle);
             }
-        }, 100);
+        }, 150);
 
-        // 5. Mouse Control
         const mouse = Mouse.create(render.canvas);
         const mouseConstraint = MouseConstraint.create(engine, {
             mouse: mouse,
             constraint: {
-                stiffness: 0.2,
+                stiffness: 0.15,
+                damping: 0.1,
                 render: { visible: false }
             }
         });
         World.add(engine.world, mouseConstraint);
 
-        // Allow scrolling over the canvas (set css pointer-events: none on canvas usually, but we need drag)
-        // We'll manage this via CSS 
-
-        // 6. Interaction Loop (Repel & Sync)
+        // Enhanced interaction with hover detection
         Events.on(engine, 'beforeUpdate', () => {
             const mousePosition = mouse.position;
             
-            physicsEntities.forEach(({ body }) => {
-                // Repel effect when mouse is close (but not dragging)
-                if (mouseConstraint.body !== body) {
-                    const d = Vector.dist(mousePosition, body.position);
-                    if (d < 200) {
-                        const force = Vector.sub(body.position, mousePosition);
-                        Vector.normalise(force);
-                        const strength = (200 - d) / 20000;
-                        Matter.Body.applyForce(body, body.position, Vector.mult(force, strength));
+            physicsEntities.forEach(({ body, element, id }) => {
+                const d = Vector.dist(mousePosition, body.position);
+                
+                // Repel effect (stronger when not dragging)
+                if (mouseConstraint.body !== body && d < 250) {
+                    const force = Vector.sub(body.position, mousePosition);
+                    Vector.normalise(force);
+                    const strength = (250 - d) / 15000;
+                    Matter.Body.applyForce(body, body.position, Vector.mult(force, strength));
+                    
+                    // Trigger hover state when very close
+                    if (d < 150 && id) {
+                        setHoveredElement(id);
                     }
+                } else if (hoveredElement === id && d >= 150) {
+                    setHoveredElement(null);
                 }
 
-                // Keep bodies within bounds gently (soft bounce back if they tunnel)
-                // (Walls handle mostly, but this is a fail-safe)
+                // Add subtle velocity to keep things moving
+                if (body.velocity.x < 0.1 && body.velocity.y < 0.1) {
+                    Matter.Body.setVelocity(body, {
+                        x: body.velocity.x + (Math.random() - 0.5) * 0.1,
+                        y: body.velocity.y + (Math.random() - 0.5) * 0.1
+                    });
+                }
             });
         });
 
         Events.on(render, 'afterRender', () => {
             physicsEntities.forEach(({ body, element }) => {
-                // Sync DOM position with Physics Body
                 const { x, y } = body.position;
                 const angle = body.angle;
                 
@@ -177,45 +183,52 @@ const GravityHero = () => {
             });
         });
 
-        // 7. Run
         const runner = Runner.create();
         Runner.run(runner, engine);
         Render.run(render);
         runnerRef.current = runner;
 
-        // Cleanup
         return () => {
             Render.stop(render);
             Runner.stop(runner);
             World.clear(engine.world);
             Engine.clear(engine);
-            render.canvas.remove();
-            render.canvas = null;
-            render.context = null;
-            render.textures = {};
+            if (render.canvas) {
+                render.canvas.remove();
+                render.canvas = null;
+                render.context = null;
+                render.textures = {};
+            }
         };
     }, []);
 
     return (
         <div className="gravity-hero-container" ref={sceneRef}>
-            {/* 
-               We place elements absolutely. They are hidden initially or centered
-               The physics engine will take over their transform immediately after mount
-            */}
-            
-            <div id="hero-label" className="gravity-element label-element">
+            <div 
+                id="hero-label" 
+                className={`gravity-element label-element ${loaded ? 'loaded' : ''} ${hoveredElement === 'hero-label' ? 'hovered' : ''}`}
+            >
                 <span className="sacred-badge">✝ Sacred Hymns</span>
             </div>
 
-            <div id="hero-title" className="gravity-element title-element">
+            <div 
+                id="hero-title" 
+                className={`gravity-element title-element ${loaded ? 'loaded' : ''} ${hoveredElement === 'hero-title' ? 'hovered' : ''}`}
+            >
                 <h1>Ethiopian <br/><span className="text-gold">Orthodox</span></h1>
             </div>
 
-            <div id="hero-desc" className="gravity-element desc-element">
+            <div 
+                id="hero-desc" 
+                className={`gravity-element desc-element ${loaded ? 'loaded' : ''} ${hoveredElement === 'hero-desc' ? 'hovered' : ''}`}
+            >
                 <p>Experience the divine beauty of traditional hymns.</p>
             </div>
 
-            <div id="hero-btn-1" className="gravity-element btn-element">
+            <div 
+                id="hero-btn-1" 
+                className={`gravity-element btn-element ${loaded ? 'loaded' : ''} ${hoveredElement === 'hero-btn-1' ? 'hovered' : ''}`}
+            >
                 <Link to="/download">
                     <Button size="large" variant="primary">
                         <FiDownload /> Download App
@@ -223,7 +236,10 @@ const GravityHero = () => {
                 </Link>
             </div>
 
-            <div id="hero-btn-2" className="gravity-element btn-element">
+            <div 
+                id="hero-btn-2" 
+                className={`gravity-element btn-element ${loaded ? 'loaded' : ''} ${hoveredElement === 'hero-btn-2' ? 'hovered' : ''}`}
+            >
                 <Link to="/about">
                     <Button size="large" variant="outline">
                         Learn More
@@ -231,7 +247,7 @@ const GravityHero = () => {
                 </Link>
             </div>
             
-            <div className="instruction-hint">
+            <div className={`instruction-hint ${loaded ? 'visible' : ''}`}>
                 Drag elements to throw • Hover to repel
             </div>
         </div>

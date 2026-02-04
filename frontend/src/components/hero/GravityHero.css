@@ -4,7 +4,6 @@
     height: 100vh;
     overflow: hidden;
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
-    /* Use sacred pattern overlay */
     background-image: 
         radial-gradient(circle at 10% 20%, var(--gold-glow) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, var(--gold-glow) 0%, transparent 40%);
@@ -14,23 +13,59 @@
     position: absolute;
     top: 0;
     left: 0;
-    /* initial centered position to avoid jumping before JS kicks in - JS will override */
-    transform: translate(-500px, -500px); 
+    transform: translate(-500px, -500px);
     will-change: transform;
     cursor: grab;
     user-select: none;
     z-index: 10;
     touch-action: none;
+    
+    /* Initial state - hidden */
+    opacity: 0;
+    filter: blur(10px);
+    transition: 
+        opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.3s ease,
+        transform 0.01s linear; /* Keep physics transform instant */
+}
+
+/* Loaded state - fade in with stagger */
+.gravity-element.loaded {
+    opacity: 1;
+    filter: blur(0);
+}
+
+.label-element.loaded { animation-delay: 0s; }
+.title-element.loaded { animation-delay: 0.15s; }
+.desc-element.loaded { animation-delay: 0.3s; }
+.btn-element:nth-of-type(4).loaded { animation-delay: 0.45s; }
+.btn-element:nth-of-type(5).loaded { animation-delay: 0.55s; }
+
+/* Hover state - glow and scale */
+.gravity-element.hovered {
+    filter: drop-shadow(0 0 20px var(--gold-glow)) blur(0) !important;
+}
+
+.gravity-element.hovered .sacred-badge,
+.gravity-element.hovered h1,
+.gravity-element.hovered p {
+    animation: gentleGlow 2s ease-in-out infinite;
+}
+
+.gravity-element.hovered .btn {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px var(--gold-glow);
 }
 
 .gravity-element:active {
     cursor: grabbing;
 }
 
+/* Element positioning */
 .label-element {
-    /* Rough initial position for JS measurement */
     top: 20%;
-    left: 50%; 
+    left: 50%;
 }
 
 .title-element {
@@ -50,10 +85,10 @@
     top: 70%;
 }
 
-/* Adjust initial CSS positions so they measure correctly before physics takes over */
 #hero-btn-1 { left: 40%; }
 #hero-btn-2 { left: 60%; }
 
+/* Sacred badge */
 .sacred-badge {
     display: inline-block;
     padding: var(--space-2) var(--space-4);
@@ -64,17 +99,19 @@
     font-weight: var(--font-weight-medium);
     box-shadow: var(--shadow-sm);
     white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
 .title-element h1 {
     font-size: var(--font-size-5xl);
     line-height: 1.1;
     margin: 0;
-    pointer-events: none; /* Let the container handle events */
+    pointer-events: none;
     background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.3s ease;
 }
 
 .desc-element p {
@@ -82,8 +119,10 @@
     color: var(--text-secondary);
     margin: 0;
     pointer-events: none;
+    transition: all 0.3s ease;
 }
 
+/* Instruction hint */
 .instruction-hint {
     position: absolute;
     bottom: 20px;
@@ -92,38 +131,36 @@
     color: var(--text-tertiary);
     font-size: var(--font-size-sm);
     pointer-events: none;
-    opacity: 0.7;
-    animation: fadeIn 2s ease-in-out;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease 1s, transform 1s ease 1s;
 }
 
-/* Canvas styling */
+.instruction-hint.visible {
+    opacity: 0.7;
+    transform: translateY(0);
+}
+
+/* Canvas */
 .gravity-hero-container canvas {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: auto; /* Allow mouse constraint to work on canvas */
-    z-index: 1; /* Behind elements? No, mouse constraint needs events. */
-    /* 
-       Actually, Matter.Mouse needs to attach to an element that receives events.
-       If we attach to canvas, canvas needs to be on top? 
-       OR we attach mouse to the container.
-       
-       We'll let canvas stay behind (z-index 1) but ensuring container passes events?
-       Wait, if canvas is behind, we can't drag "empty space" easily if DOM elements block it?
-       
-       Better approach: 
-       DOM elements are Z-index 10.
-       Canvas is Z-index 1.
-       Matter.Mouse is attached to canvas.
-       
-       We need to make sure mouse events pass through to canvas OR act on DOM elements.
-       If we drag a DOM element, we want the MouseConstraint to pick up the BODY associated with it.
-       
-       The MouseConstraint checks for bodies at the mouse position.
-       We need to make sure the mouse coordinates are correct relative to the World.
-    */
+    pointer-events: auto;
+    z-index: 1;
 }
 
+/* Gentle glow animation */
+@keyframes gentleGlow {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.2);
+    }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .title-element h1 {
         font-size: 3rem;
@@ -131,4 +168,21 @@
     
     #hero-btn-1 { left: 50%; top: 65%; }
     #hero-btn-2 { left: 50%; top: 75%; }
+    
+    .desc-element {
+        max-width: 90%;
+    }
+}
+
+/* Reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+    .gravity-element {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .gravity-element.loaded {
+        opacity: 1;
+        filter: none;
+    }
 }
