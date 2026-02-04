@@ -30,9 +30,34 @@ router.get('/', reviewController.getAllReviews);
 /**
  * @route   POST /api/reviews
  * @desc    Submit new review
- * @access  Public
+ * @access  Authenticated
  */
-router.post('/', reviewValidation, reviewController.createReview);
+router.post('/', authenticateToken, reviewValidation, reviewController.createReview);
+
+/**
+ * User-specific routes
+ */
+
+/**
+ * @route   GET /api/reviews/my-reviews
+ * @desc    Get current user's reviews
+ * @access  Authenticated
+ */
+router.get('/my-reviews', authenticateToken, reviewController.getUserReviews);
+
+/**
+ * @route   PATCH /api/reviews/my-reviews/:id
+ * @desc    Update user's own review
+ * @access  Authenticated
+ */
+router.patch('/my-reviews/:id', authenticateToken, reviewValidation, reviewController.updateUserReview);
+
+/**
+ * @route   DELETE /api/reviews/my-reviews/:id
+ * @desc    Delete user's own review
+ * @access  Authenticated
+ */
+router.delete('/my-reviews/:id', authenticateToken, reviewController.deleteUserReview);
 
 /**
  * Moderator/Admin routes

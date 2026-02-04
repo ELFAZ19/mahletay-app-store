@@ -1,10 +1,13 @@
 /**
  * Reviews Page
  * Displays user reviews and submission form
+ * Requires authentication for submission
  */
 
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../config/api';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
@@ -14,13 +17,17 @@ import StarRating from '../components/common/StarRating';
 import './Reviews.css';
 
 const Reviews = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [reviews, setReviews] = useState([]);
+  const [myReviews, setMyReviews] = useState([]);
   const [versions, setVersions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [editingReview, setEditingReview] = useState(null);
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
@@ -31,28 +38,41 @@ const Reviews = () => {
   const currentRating = watch('rating', 0);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [reviewsRes, versionsRes] = await Promise.all([
-          api.get('/reviews?approved=true&limit=20'),
-          api.get('/versions?activeOnly=true')
-        ]);
-        setReviews(reviewsRes.data.data.reviews);
-        setVersions(versionsRes.data.data.versions);
-        
-        // Set default version for form
-        if (versionsRes.data.data.versions.length > 0) {
-          setValue('version_id', versionsRes.data.data.versions[0].id);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [setValue]);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    // Auto-populate reviewer name for authenticated users
+    if (isAuthenticated && user?.username) {
+      setValue('reviewer_name', user.username);
+    }
+  }, [isAuthenticated, user, setValue]);
+
+  const fetchData = async () => {
+    try {
+      const [reviewsRes, versionsRes] = await Promise.all([
+        api.get('/reviews?approved=true&limit=20'),
+        api.get('/versions?activeOnly=true')
+      ]);
+      setReviews(reviewsRes.data.data.reviews);
+      setVersions(versionsRes.data.data.versions);
+      
+      // Set default version for form
+      if (versionsRes.data.data.versions.length > 0) {
+        setValue('version_id', versionsRes.data.data.versions[0].id);
+      }
+
+      // Fetch user's reviews if authenticated
+      if (isAuthenticated) {
+        const myReviewsRes = await api.get('/reviews/my-reviews');
+        setMyReviews(myReviewsRes.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onSubmit = async (data) => {
     // Validate rating
@@ -65,23 +85,32 @@ const Reviews = () => {
     setSubmitError('');
     
     try {
-      await api.post('/reviews', data);
-      
-      // Also submit rating
-      if (data.rating) {
-        await api.post('/ratings', {
-          version_id: data.version_id,
-          rating: data.rating
-        });
+      if (editingReview) {
+        // Update existing review
+        await api.patch(`/reviews/my-reviews/${editingReview.id}`, data);
+      } else {
+        // Create new review
+        await api.post('/reviews', data);
+        
+        // Also submit rating
+        if (data.rating) {
+          await api.post('/ratings', {
+            version_id: data.version_id,
+            rating: data.rating
+          });
+        }
       }
 
       setSubmitSuccess(true);
       reset();
-      setValue('rating', 0); // Reset rating explicitly
+      setValue('rating', 0);
+      setEditingReview(null);
+      
       setTimeout(() => {
         setSubmitSuccess(false);
         setShowForm(false);
-      }, 3000);
+        fetchData(); // Refresh reviews
+      }, 2000);
     } catch (error) {
       console.error('Error submitting review:', error);
       setSubmitError(
@@ -91,6 +120,32 @@ const Reviews = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setValue('version_id', review.version_id);
+    setValue('reviewer_name', review.reviewer_name);
+    setValue('review_text', review.review_text);
+    setShowForm(true);
+  };
+
+  const handleDeleteReview = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this review?')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/reviews/my-reviews/${id}`);
+      fetchData(); // Refresh reviews
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('Failed to delete review');
+    }
+  };
+
+  const promptLogin = () => {
+    navigate('/login', { state: { from: '/reviews' } });
   };
 
   if (loading) {
@@ -115,7 +170,14 @@ const Reviews = () => {
                 <Button 
                   size="large" 
                   magnetic 
-                  onClick={() => setShowForm(true)}
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      setShowForm(true);
+                      setEditingReview(null);
+                    } else {
+                      promptLogin();
+                    }
+                  }}
                   className="write-review-btn"
                 >
                   Write a Review
@@ -125,6 +187,41 @@ const Reviews = () => {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* My Reviews Section */}
+      {isAuthenticated && myReviews.length > 0 && !showForm && (
+        <section className="my-reviews-section">
+          <div className="container">
+            <h2>My Reviews</h2>
+            <div className="reviews-grid">
+              {myReviews.map((review) => (
+                <Card key={review.id} hoverable className="review-card my-review-card">
+                  <div className="review-header">
+                    <div>
+                      <h3>{review.reviewer_name}</h3>
+                      <span className="review-date">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </span>
+                      {!review.is_approved && (
+                        <span className="pending-badge">Pending Approval</span>
+                      )}
+                    </div>
+                    <div className="review-actions">
+                      <Button variant="ghost" size="small" onClick={() => handleEditReview(review)}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="small" onClick={() => handleDeleteReview(review.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="review-text">{review.review_text}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Review Form */}
       {showForm && (
@@ -136,13 +233,17 @@ const Reviews = () => {
                   <div className="success-message">
                     <div className="success-icon">✨</div>
                     <h3>Thank You!</h3>
-                    <p>Your review has been submitted efficiently pending moderation.</p>
+                    <p>Your review has been {editingReview ? 'updated' : 'submitted'} successfully.</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-header">
-                      <h2>Share Your Experience</h2>
-                      <Button variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
+                      <h2>{editingReview ? 'Edit Review' : 'Share Your Experience'}</h2>
+                      <Button variant="ghost" onClick={() => {
+                        setShowForm(false);
+                        setEditingReview(null);
+                        reset();
+                      }}>Cancel</Button>
                     </div>
 
                     <div className="form-group">
@@ -188,21 +289,14 @@ const Reviews = () => {
                         placeholder="Share your thoughts about the app..."
                         {...register('review_text', { 
                           required: 'Review text is required',
-                          minLength: { value: 10, message: 'Minimum 10 characters' }
+                          minLength: { value: 3, message: 'Minimum 3 characters' }
                         })} 
                       ></textarea>
                       {errors.review_text && <span className="error">{errors.review_text.message}</span>}
                     </div>
 
                     {submitError && (
-                      <div className="error-message" style={{ 
-                        padding: '1rem', 
-                        marginBottom: '1rem', 
-                        backgroundColor: 'rgba(220, 38, 38, 0.1)', 
-                        border: '1px solid rgba(220, 38, 38, 0.3)',
-                        borderRadius: 'var(--radius-md)',
-                        color: 'var(--error-color, #dc2626)'
-                      }}>
+                      <div className="error-message">
                         {submitError}
                       </div>
                     )}
@@ -214,7 +308,7 @@ const Reviews = () => {
                       className="btn-full"
                       disabled={submitting}
                     >
-                      {submitting ? 'Submitting...' : 'Submit Review'}
+                      {submitting ? (editingReview ? 'Updating...' : 'Submitting...') : (editingReview ? 'Update Review' : 'Submit Review')}
                     </Button>
                   </form>
                 )}
@@ -227,6 +321,7 @@ const Reviews = () => {
       {/* Reviews List */}
       <section className="reviews-list-section">
         <div className="container">
+          <h2>All Reviews</h2>
           <div className="reviews-grid">
             {reviews.length === 0 ? (
               <p className="no-reviews">No reviews yet. Be the first to share your thoughts!</p>

@@ -66,14 +66,85 @@ class Feedback {
    */
   static async create(feedbackData) {
     try {
-      const { type, name, email, message } = feedbackData;
+      const { type, name, email, message, user_id } = feedbackData;
       
       const [result] = await db.query(
-        'INSERT INTO feedback (type, name, email, message) VALUES (?, ?, ?, ?)',
-        [type, name, email, message]
+        'INSERT INTO feedback (user_id, type, name, email, message) VALUES (?, ?, ?, ?, ?)',
+        [user_id, type, name, email, message]
       );
 
       return { id: result.insertId, ...feedbackData, status: 'pending' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get feedback by user ID
+   */
+  static async getByUserId(userId) {
+    try {
+      const [rows] = await db.query(
+        'SELECT * FROM feedback WHERE user_id = ? ORDER BY created_at DESC',
+        [userId]
+      );
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update feedback by user (with ownership check)
+   */
+  static async updateByUser(id, userId, updates) {
+    try {
+      // First check ownership
+      const feedback = await this.findById(id);
+      if (!feedback || feedback.user_id !== userId) {
+        return null;
+      }
+
+      const fields = [];
+      const values = [];
+
+      // Only allow updating specific fields
+      const allowedFields = ['type', 'message'];
+      Object.keys(updates).forEach(key => {
+        if (allowedFields.includes(key) && updates[key] !== undefined) {
+          fields.push(`${key} = ?`);
+          values.push(updates[key]);
+        }
+      });
+
+      if (fields.length === 0) return feedback;
+
+      values.push(id);
+      const query = `UPDATE feedback SET ${fields.join(', ')} WHERE id = ?`;
+      
+      await db.query(query, values);
+      return await this.findById(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Delete feedback by user (with ownership check)
+   */
+  static async deleteByUser(id, userId) {
+    try {
+      // First check ownership
+      const feedback = await this.findById(id);
+      if (!feedback || feedback.user_id !== userId) {
+        return false;
+      }
+
+      await db.query(
+        'DELETE FROM feedback WHERE id = ?',
+        [id]
+      );
+      return true;
     } catch (error) {
       throw error;
     }

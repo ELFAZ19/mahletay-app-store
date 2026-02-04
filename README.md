@@ -1,11 +1,10 @@
-# Christian Orthodox Hymn Platform
+# mahletay app store Platform
 
 A production-ready full-stack web platform for managing and distributing a Christian Orthodox Hymn mobile application. Built with sacred aesthetics, modern UI/UX, and comprehensive functionality.
 
 ## 🕊️ Overview
 
 This platform serves as the central hub for the Ethiopian Orthodox Hymn mobile application, providing:
-- **Public Website**: Landing page, app downloads, version history, reviews, and feedback
 - **Admin Dashboard**: Version management, content moderation, analytics, and user feedback handling  
 - **Sacred Design**: Calm, reverent UI with gold accents, smooth animations, and light/dark themes
 
@@ -32,7 +31,7 @@ This platform serves as the central hub for the Ethiopian Orthodox Hymn mobile a
 ## 📦 Project Structure
 
 ```
-orthodox-hymn-platform/
+mahletay-app-store/
 ├── backend/                  # Node.js/Express API
 │   ├── src/
 │   │   ├── config/          # Database, JWT, upload configs

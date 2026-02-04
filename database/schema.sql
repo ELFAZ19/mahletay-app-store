@@ -13,7 +13,7 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'moderator') DEFAULT 'moderator',
+    role ENUM('admin', 'moderator', 'user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
@@ -60,6 +60,7 @@ CREATE TABLE downloads (
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     version_id INT NOT NULL,
+    user_id INT NULL,
     reviewer_name VARCHAR(100) NOT NULL,
     review_text TEXT NOT NULL,
     is_approved BOOLEAN DEFAULT FALSE,
@@ -68,7 +69,9 @@ CREATE TABLE reviews (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
     FOREIGN KEY (version_id) REFERENCES app_versions(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_version_id (version_id),
+    INDEX idx_user_id (user_id),
     INDEX idx_is_approved (is_approved),
     INDEX idx_created_at (created_at DESC),
     INDEX idx_deleted_at (deleted_at)
@@ -94,6 +97,7 @@ CREATE TABLE ratings (
 -- =====================================================
 CREATE TABLE feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
     type ENUM('bug', 'suggestion', 'blessing') NOT NULL,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -104,7 +108,9 @@ CREATE TABLE feedback (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     responded_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (responded_by) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_user_id (user_id),
     INDEX idx_type (type),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at DESC)

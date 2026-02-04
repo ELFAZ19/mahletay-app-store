@@ -32,24 +32,99 @@ const getAllReviews = async (req, res, next) => {
 };
 
 /**
- * Create new review (public)
+ * Create new review (authenticated users only)
  */
 const createReview = async (req, res, next) => {
   try {
     const { version_id, reviewer_name, review_text } = req.body;
 
+    // Require authentication
+    if (!req.user) {
+      throw new ApiError(401, 'Authentication required to submit a review');
+    }
+
     const review = await Review.create({
       version_id,
-      reviewer_name,
+      user_id: req.user.id,
+      reviewer_name: reviewer_name || req.user.username,
       review_text
     });
 
-    logger.info('New review submitted', { reviewId: review.id, versionId: version_id });
+    logger.info('New review submitted', { reviewId: review.id, versionId: version_id, userId: req.user.id });
 
     res.status(201).json({
       success: true,
       message: 'Review submitted successfully. It will be visible after moderation.',
       data: review
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get current user's reviews
+ */
+const getUserReviews = async (req, res, next) => {
+  try {
+    const reviews = await Review.getByUserId(req.user.id);
+
+    res.json({
+      success: true,
+      data: reviews
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Update user's own review
+ */
+const updateUserReview = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { review_text, reviewer_name } = req.body;
+
+    const review = await Review.updateByUser(id, req.user.id, {
+      review_text,
+      reviewer_name
+    });
+
+    if (!review) {
+      throw new ApiError(404, 'Review not found or you do not have permission to edit it');
+    }
+
+    logger.info('Review updated by user', { reviewId: id, userId: req.user.id });
+
+    res.json({
+      success: true,
+      message: 'Review updated successfully',
+      data: review
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Delete user's own review
+ */
+const deleteUserReview = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Review.deleteByUser(id, req.user.id);
+
+    if (!deleted) {
+      throw new ApiError(404, 'Review not found or you do not have permission to delete it');
+    }
+
+    logger.info('Review deleted by user', { reviewId: id, userId: req.user.id });
+
+    res.json({
+      success: true,
+      message: 'Review deleted successfully'
     });
   } catch (error) {
     next(error);
@@ -130,6 +205,9 @@ const deleteReview = async (req, res, next) => {
 module.exports = {
   getAllReviews,
   createReview,
+  getUserReviews,
+  updateUserReview,
+  deleteUserReview,
   approveReview,
   featureReview,
   deleteReview

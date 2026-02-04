@@ -38,6 +38,21 @@ class User {
   }
 
   /**
+   * Find user by username
+   */
+  static async findByUsername(username) {
+    try {
+      const [rows] = await db.query(
+        'SELECT * FROM users WHERE username = ?',
+        [username]
+      );
+      return rows[0] || null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Create new user
    */
   static async create(userData) {

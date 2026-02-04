@@ -30,9 +30,34 @@ const responseValidation = [
 /**
  * @route   POST /api/feedback
  * @desc    Submit feedback
- * @access  Public
+ * @access  Authenticated
  */
-router.post('/', feedbackValidation, feedbackController.submitFeedback);
+router.post('/', authenticateToken, feedbackValidation, feedbackController.submitFeedback);
+
+/**
+ * User-specific routes
+ */
+
+/**
+ * @route   GET /api/feedback/my-feedback
+ * @desc    Get current user's feedback
+ * @access  Authenticated
+ */
+router.get('/my-feedback', authenticateToken, feedbackController.getUserFeedback);
+
+/**
+ * @route   PATCH /api/feedback/my-feedback/:id
+ * @desc    Update user's own feedback
+ * @access  Authenticated
+ */
+router.patch('/my-feedback/:id', authenticateToken, feedbackValidation, feedbackController.updateUserFeedback);
+
+/**
+ * @route   DELETE /api/feedback/my-feedback/:id
+ * @desc    Delete user's own feedback
+ * @access  Authenticated
+ */
+router.delete('/my-feedback/:id', authenticateToken, feedbackController.deleteUserFeedback);
 
 /**
  * Admin/Moderator routes

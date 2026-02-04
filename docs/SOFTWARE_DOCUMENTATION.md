@@ -1,5 +1,5 @@
 # Software Design Document (SDD)
-# Orthodox Hymn Platform
+# mahletay app store API Platform
 
 **Version:** 1.0.0
 **Date:** 2024-02-04
@@ -10,11 +10,10 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-The purpose of this document is to provide a comprehensive architectural and design overview of the **Orthodox Hymn Platform**. This platform serves as a centralized system for managing, distributing, and interacting with the Ethiopian Orthodox Hymn mobile application. It facilitates app version control, user feedback management, and community engagement through reviews and ratings.
+The purpose of this document is to provide a comprehensive architectural and design overview of the **mahletay app store API Platform**. This platform serves as a centralized system for managing, distributing, and interacting with the Ethiopian Orthodox Hymn mobile application. It facilitates app version control, user feedback management, and community engagement through reviews and ratings.
 
 ### 1.2 Scope
 The scope of the software system includes:
-- **Public Web Portal**: A responsive landing page for app promotion, downloads, and user interaction.
 - **Admin Dashboard**: A restricted area for administrators to manage content, versions, and moderate user submissions.
 - **Backend API**: A RESTful API serving both the web platform and (potentially) mobile clients.
 - **Database**: A relational database for persistent storage of users, versions, reviews, and feedback.

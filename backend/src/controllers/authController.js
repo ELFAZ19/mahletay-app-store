@@ -81,6 +81,65 @@ const verifyToken = async (req, res, next) => {
 };
 
 /**
+ * Register new user
+ */
+const register = async (req, res, next) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findByEmail(email);
+    if (existingUser) {
+      throw new ApiError(400, 'Email already registered');
+    }
+
+    // Check if username already exists
+    const existingUsername = await User.findByUsername(username);
+    if (existingUsername) {
+      throw new ApiError(400, 'Username already taken');
+    }
+
+    // Create new user with 'user' role
+    const newUser = await User.create({
+      username,
+      email,
+      password,
+      role: 'user'
+    });
+
+    // Generate JWT token for automatic login
+    const token = jwt.sign(
+      { 
+        id: newUser.id, 
+        email: newUser.email,
+        username: newUser.username,
+        role: newUser.role 
+      },
+      jwtConfig.secret,
+      { expiresIn: jwtConfig.expiresIn }
+    );
+
+    logger.info('New user registered', { userId: newUser.id, email: newUser.email });
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        token,
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          email: newUser.email,
+          role: newUser.role
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Logout (optional - mainly for logging purposes as JWT is stateless)
  */
 const logout = async (req, res, next) => {
@@ -98,6 +157,7 @@ const logout = async (req, res, next) => {
 
 module.exports = {
   login,
+  register,
   verifyToken,
   logout
 };

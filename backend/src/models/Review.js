@@ -71,14 +71,85 @@ class Review {
    */
   static async create(reviewData) {
     try {
-      const { version_id, reviewer_name, review_text } = reviewData;
+      const { version_id, reviewer_name, review_text, user_id } = reviewData;
       
       const [result] = await db.query(
-        'INSERT INTO reviews (version_id, reviewer_name, review_text) VALUES (?, ?, ?)',
-        [version_id, reviewer_name, review_text]
+        'INSERT INTO reviews (version_id, user_id, reviewer_name, review_text) VALUES (?, ?, ?, ?)',
+        [version_id, user_id, reviewer_name, review_text]
       );
 
       return { id: result.insertId, ...reviewData, is_approved: false };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get reviews by user ID
+   */
+  static async getByUserId(userId) {
+    try {
+      const [rows] = await db.query(
+        'SELECT * FROM reviews WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC',
+        [userId]
+      );
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update review by user (with ownership check)
+   */
+  static async updateByUser(id, userId, updates) {
+    try {
+      // First check ownership
+      const review = await this.findById(id);
+      if (!review || review.user_id !== userId) {
+        return null;
+      }
+
+      const fields = [];
+      const values = [];
+
+      // Only allow updating specific fields
+      const allowedFields = ['review_text', 'reviewer_name'];
+      Object.keys(updates).forEach(key => {
+        if (allowedFields.includes(key) && updates[key] !== undefined) {
+          fields.push(`${key} = ?`);
+          values.push(updates[key]);
+        }
+      });
+
+      if (fields.length === 0) return review;
+
+      values.push(id);
+      const query = `UPDATE reviews SET ${fields.join(', ')} WHERE id = ?`;
+      
+      await db.query(query, values);
+      return await this.findById(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Delete review by user (with ownership check)
+   */
+  static async deleteByUser(id, userId) {
+    try {
+      // First check ownership
+      const review = await this.findById(id);
+      if (!review || review.user_id !== userId) {
+        return false;
+      }
+
+      await db.query(
+        'UPDATE reviews SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [id]
+      );
+      return true;
     } catch (error) {
       throw error;
     }

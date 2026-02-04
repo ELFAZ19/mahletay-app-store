@@ -101,7 +101,7 @@ const GravityHero = () => {
                     onMouseEnter={() => setHoveredElement('label')}
                     onMouseLeave={() => setHoveredElement(null)}
                 >
-                    <span className="sacred-badge">✝ Sacred Hymns</span>
+                    <span className="sacred-badge">✝ Spritual Hymns</span>
                 </div>
 
                 <div 
@@ -110,8 +110,8 @@ const GravityHero = () => {
                     onMouseLeave={() => setHoveredElement(null)}
                 >
                     <h1>
-                        Ethiopian Orthodox<br/>
-                        <span className="text-gold">Hymn Application</span>
+                        ማኅሌታይ የኦርቶዶክሳዊ የመዝሙር<br/>
+                        <span className="text-gold"> Application</span>
                     </h1>
                 </div>
 

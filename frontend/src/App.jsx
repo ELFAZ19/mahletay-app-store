@@ -16,7 +16,9 @@ import './styles/animations.css';
 
 import Reviews from './pages/Reviews';
 import Feedback from './pages/Feedback';
-const AdminDashboard = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Admin Dashboard</h1><p>Coming soon...</p></div>;
+import Login from './pages/Login';
+import Register from './pages/Register';
+const AdminDashboard = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Admin Dashboard</h1><p>Coming soon... </p></div>;
 const AdminLogin = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Admin Login</h1><p>Coming soon...</p></div>;
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
                 <Route path="/reviews" element={<Reviews />} />
                 <Route path="/feedback" element={<Feedback />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
               </Routes>

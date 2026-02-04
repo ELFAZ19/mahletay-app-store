@@ -100,12 +100,12 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`
-  ╔═══════════════════════════════════════════╗
-  ║   Orthodox Hymn Platform API Server      ║
-  ║   Port: ${PORT}                              ║
-  ║   Environment: ${process.env.NODE_ENV || 'development'}            ║
-  ║   Status: ✅ Running                       ║
-  ╚═══════════════════════════════════════════╝
+  ╔═════════════════════════════════════════════════════════════════════╗
+  ║   mahletay app store API Server                                     ║
+  ║   Port: ${PORT}                                                        ║
+  ║   Environment: ${process.env.NODE_ENV || 'development'}                                          ║
+  ║   Status: ✅ Runnin                                                 ║
+  ╚═════════════════════════════════════════════════════════════════════╝
   `);
   logger.info('Server started successfully', { port: PORT });
 });
