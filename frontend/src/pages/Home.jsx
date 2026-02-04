@@ -8,20 +8,13 @@ import { Link } from 'react-router-dom';
 import { FiDownload, FiStar, FiHeart } from 'react-icons/fi';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
-import GravityHero from '../components/hero/GravityHero';
-import ScrollReveal from '../components/animations/ScrollReveal';
-import './Home.css';
+import InfiniteCarousel from '../components/common/InfiniteCarousel';
 
-const Home = () => {
-  return (
-    <div className="home">
-      {/* Physics Driven Hero Section */}
-      <GravityHero />
+// ... imports
 
-      {/* Features Section */}
-      <section className="section features-section">
-        <div className="container">
-          <ScrollReveal animation="fade-up">
+// Inside Home component:
+          <div className="section-header-wrapper">
+            <ScrollReveal animation="fade-up">
             <h2 className="section-title text-center">
               Sacred Features
             </h2>
@@ -29,67 +22,58 @@ const Home = () => {
               Designed with reverence and care for your spiritual journey
             </p>
           </ScrollReveal>
+          </div>
 
-          <div className="features-grid">
-            <ScrollReveal animation="fade-up" delay={0.1}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+          <div className="features-carousel-wrapper">
+            <InfiniteCarousel speed={40}>
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">🎵</div>
                 </div>
                 <h3>200+ Sacred Hymns</h3>
-                <p>Comprehensive collection of traditional Ethiopian Orthodox hymns in Amharic and Ge'ez</p>
+                <p>Comprehensive collection of traditional Orthodox hymns</p>
               </Card>
-            </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={0.15}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">📖</div>
                 </div>
                 <h3>Multilingual Lyrics</h3>
-                <p>Read hymn lyrics in multiple languages with accurate translations</p>
+                <p>Read hymn lyrics in Amharic, Ge'ez and English</p>
               </Card>
-            </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={0.2}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">🌙</div>
                 </div>
                 <h3>Dark Mode</h3>
-                <p>Beautiful sacred design in both light and dark themes for any time of day</p>
+                <p>Beautiful sacred design in light and dark themes</p>
               </Card>
-            </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={0.25}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">📱</div>
                 </div>
                 <h3>Offline Access</h3>
-                <p>Listen to hymns anytime, anywhere without internet connection</p>
+                <p>Listen anytime without internet connection</p>
               </Card>
-            </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={0.3}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">🔔</div>
                 </div>
                 <h3>Daily Devotionals</h3>
-                <p>Receive gentle notifications for your daily prayer times</p>
+                <p>Gentle notifications for daily prayers</p>
               </Card>
-            </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={0.35}>
-              <Card hoverable className="feature-card">
-                <div className="feature-icon-wrapper">
+              <Card hoverable className="feature-card-compact">
+                <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon sacred-glow">🎨</div>
                 </div>
                 <h3>Sacred Design</h3>
-                <p>Interface crafted with reverence, beauty, and spiritual aesthetics</p>
+                <p>Interface crafted with reverence and beauty</p>
               </Card>
-            </ScrollReveal>
+            </InfiniteCarousel>
           </div>
         </div>
       </section>

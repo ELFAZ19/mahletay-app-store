@@ -1,0 +1,66 @@
+/* Infinite Carousel Styles */
+
+.infinite-carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  /* Mask edges for smooth fade out */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  padding: var(--space-4) 0;
+}
+
+.infinite-carousel-track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-6);
+  animation: scroll var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
+}
+
+.carousel-group {
+  display: flex;
+  gap: var(--space-6);
+  /* Ensure items don't shrink */
+  flex-shrink: 0;
+}
+
+/* Pause animation on hover */
+.pause-hover:hover .infinite-carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%); /* Move by 1/3 since we have 3 sets */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .infinite-carousel-track {
+    animation: none;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: var(--space-4);
+  }
+  
+  .infinite-carousel-container {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
