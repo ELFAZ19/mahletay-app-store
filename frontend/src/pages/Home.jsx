@@ -21,49 +21,75 @@ const Home = () => {
       {/* Features Section */}
       <section className="section features-section">
         <div className="container">
-          <h2 className="section-title text-center fade-in-up">
-            Sacred Features
-          </h2>
-          <p className="section-description text-center fade-in-up">
-            Designed with reverence and care for your spiritual journey
-          </p>
+          <ScrollReveal animation="fade-up">
+            <h2 className="section-title text-center">
+              Sacred Features
+            </h2>
+            <p className="section-description text-center">
+              Designed with reverence and care for your spiritual journey
+            </p>
+          </ScrollReveal>
 
           <div className="features-grid">
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">🎵</div>
-              <h3>200+ Sacred Hymns</h3>
-              <p>Comprehensive collection of traditional Ethiopian Orthodox hymns in Amharic and Ge'ez</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.1}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">🎵</div>
+                </div>
+                <h3>200+ Sacred Hymns</h3>
+                <p>Comprehensive collection of traditional Ethiopian Orthodox hymns in Amharic and Ge'ez</p>
+              </Card>
+            </ScrollReveal>
 
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">📖</div>
-              <h3>Multilingual Lyrics</h3>
-              <p>Read hymn lyrics in multiple languages with accurate translations</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.15}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">📖</div>
+                </div>
+                <h3>Multilingual Lyrics</h3>
+                <p>Read hymn lyrics in multiple languages with accurate translations</p>
+              </Card>
+            </ScrollReveal>
 
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">🌙</div>
-              <h3>Dark Mode</h3>
-              <p>Beautiful sacred design in both light and dark themes for any time of day</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.2}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">🌙</div>
+                </div>
+                <h3>Dark Mode</h3>
+                <p>Beautiful sacred design in both light and dark themes for any time of day</p>
+              </Card>
+            </ScrollReveal>
 
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">📱</div>
-              <h3>Offline Access</h3>
-              <p>Listen to hymns anytime, anywhere without internet connection</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.25}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">📱</div>
+                </div>
+                <h3>Offline Access</h3>
+                <p>Listen to hymns anytime, anywhere without internet connection</p>
+              </Card>
+            </ScrollReveal>
 
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">🔔</div>
-              <h3>Daily Devotionals</h3>
-              <p>Receive gentle notifications for your daily prayer times</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.3}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">🔔</div>
+                </div>
+                <h3>Daily Devotionals</h3>
+                <p>Receive gentle notifications for your daily prayer times</p>
+              </Card>
+            </ScrollReveal>
 
-            <Card hoverable className="feature-card stagger-item">
-              <div className="feature-icon sacred-glow">🎨</div>
-              <h3>Sacred Design</h3>
-              <p>Interface crafted with reverence, beauty, and spiritual aesthetics</p>
-            </Card>
+            <ScrollReveal animation="fade-up" delay={0.35}>
+              <Card hoverable className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <div className="feature-icon sacred-glow">🎨</div>
+                </div>
+                <h3>Sacred Design</h3>
+                <p>Interface crafted with reverence, beauty, and spiritual aesthetics</p>
+              </Card>
+            </ScrollReveal>
           </div>
         </div>
       </section>
