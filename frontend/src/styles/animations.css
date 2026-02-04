@@ -1,0 +1,295 @@
+/* ========================================
+   ANIMATION CLASSES
+   Sacred and Respectful Animations
+   ======================================== */
+
+/* ========================================
+   FADE IN ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-smooth) ease-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp var(--transition-smooth) ease-out;
+}
+
+.fade-in-down {
+  animation: fadeInDown var(--transition-smooth) ease-out;
+}
+
+/* ========================================
+   STAGGER ANIMATIONS (for lists)
+   ======================================== */
+
+.stagger-item {
+  opacity: 0;
+  animation: fadeInUp var(--transition-smooth) ease-out forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 100ms; }
+.stagger-item:nth-child(3) { animation-delay: 200ms; }
+.stagger-item:nth-child(4) { animation-delay: 300ms; }
+.stagger-item:nth-child(5) { animation-delay: 400ms; }
+.stagger-item:nth-child(6) { animation-delay: 500ms; }
+.stagger-item:nth-child(7) { animation-delay: 600ms; }
+.stagger-item:nth-child(8) { animation-delay: 700ms; }
+
+/* ========================================
+   SCALE & LIFT ANIMATIONS
+   ======================================== */
+
+.scale-on-hover {
+  transition: transform var(--transition-base);
+}
+
+.scale-on-hover:hover {
+  transform: scale(1.03);
+}
+
+.lift-on-hover {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.lift-on-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   GLOW ANIMATION (for sacred elements)
+   ======================================== */
+
+@keyframes gentleGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--gold-glow),
+                0 0 20px var(--gold-glow);
+  }
+  50% {
+    box-shadow: 0 0 15px var(--gold-glow),
+                0 0 30px var(--gold-glow),
+                0 0 40px var(--gold-glow);
+  }
+}
+
+.sacred-glow {
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+/* ========================================
+   SHIMMER EFFECT (for loading states)
+   ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ========================================
+   SLIDE ANIMATIONS
+   ======================================== */
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft var(--transition-smooth) ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight var(--transition-smooth) ease-out;
+}
+
+/* ========================================
+   PULSE ANIMATION (gentle, sacred)
+   ======================================== */
+
+@keyframes sacredPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.sacred-pulse {
+  animation: sacredPulse 2s ease-in-out infinite;
+}
+
+/* ========================================
+   BREATHING ANIMATION (subtle background)
+   ======================================== */
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px);
+    opacity: 0.5;
+  }
+}
+
+.breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* ========================================
+   SMOOTH TRANSITIONS (utilities)
+   ======================================== */
+
+.transition-all {
+  transition: all var(--transition-base);
+}
+
+.transition-transform {
+  transition: transform var(--transition-base);
+}
+
+.transition-opacity {
+  transition: opacity var(--transition-base);
+}
+
+.transition-colors {
+  transition: background-color var(--transition-base), 
+              color var(--transition-base), 
+              border-color var(--transition-base);
+}
+
+/* ========================================
+   PAGE TRANSITIONS
+   ======================================== */
+
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-smooth), 
+              transform var(--transition-smooth);
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+/* ========================================
+   STAR RATING ANIMATION
+   ======================================== */
+
+@keyframes starFill {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.star-fill {
+  animation: starFill 0.3s ease-out;
+}
+
+/* ========================================
+   MAGNETIC BUTTON EFFECT
+   Subtle attraction to cursor - applied via JS
+   ======================================== */
+
+.magnetic-button {
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* ========================================
+   PARALLAX LAYERS
+   Applied via JS for better performance
+   ======================================== */
+
+.parallax-layer {
+  will-change: transform;
+}

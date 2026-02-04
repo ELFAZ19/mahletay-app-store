@@ -1,0 +1,36 @@
+/* StarRating Styles */
+
+.star-rating {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.star {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-tertiary);
+  cursor: default;
+  transition: all var(--transition-fast);
+}
+
+.star-interactive {
+  cursor: pointer;
+}
+
+.star-filled {
+  color: var(--gold);
+}
+
+.star-icon {
+  display: block;
+  transition: transform var(--transition-fast);
+}
+
+.star-interactive:hover .star-icon {
+  transform: scale(1.2);
+}
+
+.star-interactive .star-filled .star-icon {
+  animation: starFill 0.3s ease-out;
+}
