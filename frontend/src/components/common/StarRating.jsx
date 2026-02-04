@@ -15,9 +15,16 @@ const StarRating = ({
   onChange 
 }) => {
   const [hoverValue, setHoverValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  // Update internal state when value prop changes
+  React.useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
 
   const handleClick = (rating) => {
     if (interactive && onChange) {
+      setSelectedValue(rating);
       onChange(rating);
     }
   };
@@ -34,9 +41,12 @@ const StarRating = ({
     }
   };
 
+  // Use hoverValue if hovering, otherwise use selectedValue for interactive or value for display-only
+  const displayValue = hoverValue || (interactive ? selectedValue : value);
+
   const stars = [];
   for (let i = 1; i <= count; i++) {
-    const filled = i <= (hoverValue || value);
+    const filled = i <= displayValue;
     stars.push(
       <button
         key={i}
@@ -47,6 +57,7 @@ const StarRating = ({
         onMouseLeave={handleMouseLeave}
         disabled={!interactive}
         style={{ fontSize: size }}
+        aria-label={`Rate ${i} out of ${count} stars`}
       >
         <FiStar className="star-icon" fill={filled ? 'currentColor' : 'none'} />
       </button>

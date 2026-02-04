@@ -15,15 +15,25 @@ const Header = () => {
   const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
 
   const isActive = (path) => location.pathname === path;
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
   };
 
   return (
-    <header className="header">
+    <header className={`header ${isScrolled ? 'is-scrolled' : 'is-transparent'}`}>
       <div className="container">
         <div className="header-content">
           {/* Logo */}

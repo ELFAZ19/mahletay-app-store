@@ -20,8 +20,15 @@ const Reviews = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
+    defaultValues: {
+      rating: 0
+    }
+  });
+
+  const currentRating = watch('rating', 0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +55,15 @@ const Reviews = () => {
   }, [setValue]);
 
   const onSubmit = async (data) => {
+    // Validate rating
+    if (!data.rating || data.rating === 0) {
+      setSubmitError('Please select a star rating');
+      return;
+    }
+
     setSubmitting(true);
+    setSubmitError('');
+    
     try {
       await api.post('/reviews', data);
       
@@ -62,12 +77,17 @@ const Reviews = () => {
 
       setSubmitSuccess(true);
       reset();
+      setValue('rating', 0); // Reset rating explicitly
       setTimeout(() => {
         setSubmitSuccess(false);
         setShowForm(false);
       }, 3000);
     } catch (error) {
       console.error('Error submitting review:', error);
+      setSubmitError(
+        error.response?.data?.message || 
+        'Failed to submit review. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -147,13 +167,17 @@ const Reviews = () => {
                     </div>
 
                     <div className="form-group">
-                      <label>Rating</label>
+                      <label>Rating *</label>
                       <div className="rating-input">
                         <StarRating 
+                          value={currentRating}
                           interactive 
                           size={32} 
                           onChange={(val) => setValue('rating', val)} 
                         />
+                        {currentRating > 0 && (
+                          <span className="rating-text">{currentRating} out of 5 stars</span>
+                        )}
                       </div>
                     </div>
 
@@ -169,6 +193,19 @@ const Reviews = () => {
                       ></textarea>
                       {errors.review_text && <span className="error">{errors.review_text.message}</span>}
                     </div>
+
+                    {submitError && (
+                      <div className="error-message" style={{ 
+                        padding: '1rem', 
+                        marginBottom: '1rem', 
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)', 
+                        border: '1px solid rgba(220, 38, 38, 0.3)',
+                        borderRadius: 'var(--radius-md)',
+                        color: 'var(--error-color, #dc2626)'
+                      }}>
+                        {submitError}
+                      </div>
+                    )}
 
                     <Button 
                       type="submit" 

@@ -17,7 +17,7 @@ class Rating {
       const query = `
         INSERT INTO ratings (version_id, rating, ip_address) 
         VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE rating = ?, updated_at = CURRENT_TIMESTAMP
+        ON DUPLICATE KEY UPDATE rating = ?
       `;
 
       const [result] = await db.query(query, [version_id, rating, ip_address, rating]);
