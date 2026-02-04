@@ -111,7 +111,7 @@ orthodox-hymn-platform/
    ```bash
    cd backend
    npm run dev
-   # Server runs on http://localhost:5000
+   # Server runs on http://localhost:5001
    ```
 
 2. **Start Frontend** (Terminal 2)
@@ -123,7 +123,7 @@ orthodox-hymn-platform/
 
 3. **Access the application**
    - Public Website: http://localhost:5173
-   - API: http://localhost:5000/api
+   - API: http://localhost:5001/api
    - Admin Login: http://localhost:5173/admin/login
      - Default credentials: `admin@orthodoxhymn.com` / `Admin@123`
 
