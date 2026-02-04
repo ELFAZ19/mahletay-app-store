@@ -1,3 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
+import './InfiniteCarousel.css';
+
 const InfiniteCarousel = ({ children, speed = 30, direction = 'left', pauseOnHover = true }) => {
   const [contentWidth, setContentWidth] = useState(0);
   const containerRef = useRef(null);
@@ -10,8 +13,8 @@ const InfiniteCarousel = ({ children, speed = 30, direction = 'left', pauseOnHov
     }
   }, [children]);
 
-  // We duplicate children to create a seamless loop
-  const duplicatedChildren = [children, children, children]; 
+  // Duplicate children 4 times to ensure seamless loop even on wide screens
+  const duplicatedChildren = [children, children, children, children]; 
 
   return (
     <div 

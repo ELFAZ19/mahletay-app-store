@@ -163,6 +163,10 @@
   /* Removed radial gradient background */
   background: transparent; 
   border-radius: 0;
+  /* Ensure no shadows */
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
 .feature-card-compact h3 {

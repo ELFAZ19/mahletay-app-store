@@ -37,7 +37,7 @@ const Home = () => {
             <InfiniteCarousel speed={40}>
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">🎵</div>
+                  <div className="feature-icon">🎵</div>
                 </div>
                 <h3>200+ Sacred Hymns</h3>
                 <p>Comprehensive collection of traditional Orthodox hymns</p>
@@ -45,7 +45,7 @@ const Home = () => {
 
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">📖</div>
+                  <div className="feature-icon">📖</div>
                 </div>
                 <h3>Multilingual Lyrics</h3>
                 <p>Read hymn lyrics in Amharic, Ge'ez and English</p>
@@ -53,7 +53,7 @@ const Home = () => {
 
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">🌙</div>
+                  <div className="feature-icon">🌙</div>
                 </div>
                 <h3>Dark Mode</h3>
                 <p>Beautiful sacred design in light and dark themes</p>
@@ -61,7 +61,7 @@ const Home = () => {
 
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">📱</div>
+                  <div className="feature-icon">📱</div>
                 </div>
                 <h3>Offline Access</h3>
                 <p>Listen anytime without internet connection</p>
@@ -69,7 +69,7 @@ const Home = () => {
 
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">🔔</div>
+                  <div className="feature-icon">🔔</div>
                 </div>
                 <h3>Daily Devotionals</h3>
                 <p>Gentle notifications for daily prayers</p>
@@ -77,7 +77,7 @@ const Home = () => {
 
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
-                  <div className="feature-icon sacred-glow">🎨</div>
+                  <div className="feature-icon">🎨</div>
                 </div>
                 <h3>Sacred Design</h3>
                 <p>Interface crafted with reverence and beauty</p>
