@@ -1,0 +1,16 @@
+/* Floating Element Animation */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(var(--float-distance, -20px));
+  }
+}
+
+.floating-element {
+  animation: float var(--float-duration, 3s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  will-change: transform;
+}
