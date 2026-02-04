@@ -2,6 +2,9 @@
     position: relative;
     width: 100%;
     height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
     background-image: 
@@ -9,94 +12,83 @@
         radial-gradient(circle at 90% 80%, var(--gold-glow) 0%, transparent 40%);
 }
 
-.gravity-element {
+/* Decorative floating particles */
+.hero-decoration {
     position: absolute;
-    will-change: transform;
-    cursor: grab;
-    user-select: none;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, var(--gold), transparent);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: floatParticle 20s ease-in-out infinite;
+}
+
+@keyframes floatParticle {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(30px, -40px);
+    }
+    50% {
+        transform: translate(-20px, -80px);
+    }
+    75% {
+        transform: translate(40px, -40px);
+    }
+}
+
+/* Hero content container */
+.hero-content {
+    position: relative;
     z-index: 10;
-    touch-action: none;
-    
-    /* Initial state - hidden */
-    opacity: 0;
-    filter: blur(10px);
-    transition: 
-        opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-        filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow 0.3s ease;
+    text-align: center;
+    max-width: 900px;
+    padding: var(--space-6);
+    animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Loaded state - fade in with stagger */
-.gravity-element.loaded {
-    opacity: 1;
-    filter: blur(0);
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.label-element.loaded { transition-delay: 0s; }
-.title-element.loaded { transition-delay: 0.15s; }
-.desc-element.loaded { transition-delay: 0.3s; }
-.btn-element:nth-of-type(4).loaded { transition-delay: 0.45s; }
-.btn-element:nth-of-type(5).loaded { transition-delay: 0.55s; }
-
-/* Hover state - glow and scale */
-.gravity-element.hovered {
-    filter: drop-shadow(0 0 20px var(--gold-glow)) blur(0) !important;
+/* Hero elements */
+.hero-element {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.gravity-element.hovered .sacred-badge,
-.gravity-element.hovered h1,
-.gravity-element.hovered p {
+.hero-element.hovered {
+    filter: drop-shadow(0 0 20px var(--gold-glow));
+    transform: translateY(-5px);
+}
+
+.hero-element.hovered .sacred-badge,
+.hero-element.hovered h1,
+.hero-element.hovered p {
     animation: gentleGlow 2s ease-in-out infinite;
 }
 
-.gravity-element.hovered .btn {
-    transform: scale(1.05);
-    box-shadow: 0 8px 30px var(--gold-glow);
-}
-
-.gravity-element:active {
-    cursor: grabbing;
-}
-
-/* Element positioning - centered initially */
+/* Label */
 .label-element {
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-bottom: var(--space-4);
+    animation-delay: 0s;
 }
 
-.title-element {
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-}
-
-.desc-element {
-    top: 52%;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 500px;
-    text-align: center;
-}
-
-.btn-element {
-    display: inline-block;
-}
-
-#hero-btn-1 { 
-    top: 68%; 
-    left: 50%;
-    transform: translateX(calc(-100% - 10px));
-}
-
-#hero-btn-2 { 
-    top: 68%; 
-    left: 50%;
-    transform: translateX(10px);
-}
-
-/* Sacred badge */
 .sacred-badge {
     display: inline-block;
     padding: var(--space-2) var(--space-4);
@@ -110,11 +102,16 @@
     transition: all 0.3s ease;
 }
 
+/* Title */
+.title-element {
+    margin-bottom: var(--space-4);
+    animation-delay: 0.15s;
+}
+
 .title-element h1 {
     font-size: var(--font-size-5xl);
-    line-height: 1.1;
+    line-height: 1.2;
     margin: 0;
-    pointer-events: none;
     background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -122,40 +119,27 @@
     transition: all 0.3s ease;
 }
 
+/* Description */
+.desc-element {
+    margin-bottom: var(--space-6);
+    animation-delay: 0.3s;
+}
+
 .desc-element p {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
     color: var(--text-secondary);
     margin: 0;
-    pointer-events: none;
+    line-height: 1.6;
     transition: all 0.3s ease;
 }
 
-/* Instruction hint */
-.instruction-hint {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-    color: var(--text-tertiary);
-    font-size: var(--font-size-sm);
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s ease 1s, transform 1s ease 1s;
-}
-
-.instruction-hint.visible {
-    opacity: 0.7;
-    transform: translateY(0);
-}
-
-/* Canvas */
-.gravity-hero-container canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: auto;
-    z-index: 1;
+/* Actions */
+.hero-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+    animation-delay: 0.45s;
 }
 
 /* Gentle glow animation */
@@ -171,48 +155,37 @@
 /* Responsive */
 @media (max-width: 768px) {
     .title-element h1 {
-        font-size: 2.5rem;
+        font-size: var(--font-size-3xl);
     }
     
-    .desc-element {
-        max-width: 85%;
+    .desc-element p {
         font-size: var(--font-size-base);
     }
     
-    #hero-btn-1 { 
-        top: 70%; 
-        left: 50%;
-        transform: translateX(-50%);
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
     
-    #hero-btn-2 { 
-        top: 78%; 
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .label-element {
-        top: 12%;
-    }
-    
-    .title-element {
-        top: 28%;
-    }
-    
-    .desc-element {
-        top: 50%;
+    .floating-particle {
+        display: none; /* Hide particles on mobile for performance */
     }
 }
 
-/* Reduced motion fallback */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-    .gravity-element {
-        transition: none !important;
+    .hero-content,
+    .hero-element,
+    .floating-particle {
         animation: none !important;
+        transition: none !important;
     }
     
-    .gravity-element.loaded {
+    .hero-content {
         opacity: 1;
-        filter: none;
+        transform: none;
     }
 }
