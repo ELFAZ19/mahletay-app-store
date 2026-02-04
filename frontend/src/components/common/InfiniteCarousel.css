@@ -1,75 +1,88 @@
 .infinite-carousel-container {
   width: 100%;
-  overflow-x: auto; /* Enable manual scrolling */
+  overflow-x: auto;
   overflow-y: hidden;
   position: relative;
-  /* Mask edges lightly */
+  /* Disable standard smooth scrolling to let JS handle animation smoothly */
+  scroll-behavior: auto; 
+  cursor: grab;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  /* Soft fade edges - subtle expansion */
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    black 5%,
-    black 95%,
+    black 10%,
+    black 90%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    black 5%,
-    black 95%,
+    black 10%,
+    black 90%,
     transparent 100%
   );
-  padding: var(--space-4) 0;
-  cursor: grab;
-  scrollbar-width: none; /* Hide scrollbar for clean look */
+
+  padding: 1.5rem 0; /* slightly more padding for hover lift */
+}
+
+/* Ensure no selection during drag */
+.infinite-carousel-container {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .infinite-carousel-container::-webkit-scrollbar {
   display: none;
 }
 
-.infinite-carousel-container:active {
-  cursor: grabbing;
-}
-
+/* Track styles */
 .infinite-carousel-track {
   display: flex;
   width: max-content;
-  gap: var(--space-6);
-  animation: scroll var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
+  gap: 2.5rem; /* Increased gap for cleaner look */
+  will-change: transform, scroll-position;
 }
 
 .carousel-group {
   display: flex;
-  gap: var(--space-6);
-  /* Ensure items don't shrink */
+  gap: 2rem;
   flex-shrink: 0;
 }
 
-/* Pause animation on hover */
-.pause-hover:hover .infinite-carousel-track {
-  animation-play-state: paused;
+.carousel-item {
+  flex: 0 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-25%); /* Move by 1/4 since we have 4 sets */
-  }
+.carousel-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.5rem;
 }
 
-/* Reduced motion support */
+/* Hover effect: scale slightly + depth */
+.carousel-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .infinite-carousel-track {
-    animation: none;
-    overflow-x: auto;
-    width: 100%;
-    padding-bottom: var(--space-4);
+    transition: none;
   }
-  
-  .infinite-carousel-container {
-    mask-image: none;
-    -webkit-mask-image: none;
+  .carousel-item {
+    transition: none;
   }
 }

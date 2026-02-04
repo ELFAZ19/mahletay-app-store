@@ -34,7 +34,7 @@ const Home = () => {
           </div>
 
           <div className="features-carousel-wrapper">
-            <InfiniteCarousel speed={40}>
+            <InfiniteCarousel speed={80}>
               <Card hoverable className="feature-card-compact">
                 <div className="feature-icon-wrapper-compact">
                   <div className="feature-icon">🎵</div>
