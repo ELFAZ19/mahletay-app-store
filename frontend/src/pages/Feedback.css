@@ -1,0 +1,118 @@
+/* Feedback Page Styles */
+
+.feedback-page {
+  min-height: 100vh;
+  padding: var(--space-8) 0;
+  background: var(--bg-primary);
+}
+
+.feedback-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.feedback-info {
+  position: sticky;
+  top: 100px;
+}
+
+.scared-label {
+  display: inline-block;
+  color: var(--gold);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: var(--font-size-sm);
+}
+
+.feedback-info h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+.feedback-info > p {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-8);
+  line-height: 1.6;
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.contact-card:hover {
+  border-color: var(--border-gold);
+  background: var(--bg-tertiary);
+}
+
+.contact-card .icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-card h3 {
+  font-size: var(--font-size-lg);
+  margin-bottom: 0;
+}
+
+.contact-card p {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0;
+}
+
+/* Feedback Form */
+.feedback-form-card {
+  padding: var(--space-8);
+}
+
+.feedback-form-card h2 {
+  text-align: center;
+  margin-bottom: var(--space-6);
+  color: var(--gold);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .feedback-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .feedback-info {
+    position: static;
+    text-align: center;
+  }
+
+  .contact-methods {
+    align-items: center;
+  }
+
+  .contact-card {
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+  }
+}

@@ -14,9 +14,8 @@ import About from './pages/About';
 import './styles/index.css';
 import './styles/animations.css';
 
-// Placeholder components for Reviews and Feedback (to be fully implemented)
-const Reviews = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Reviews Page</h1><p>Coming soon...</p></div>;
-const Feedback = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Feedback Page</h1><p>Coming soon...</p></div>;
+import Reviews from './pages/Reviews';
+import Feedback from './pages/Feedback';
 const AdminDashboard = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Admin Dashboard</h1><p>Coming soon...</p></div>;
 const AdminLogin = () => <div className="container" style={{padding: '100px 0', textAlign: 'center'}}><h1>Admin Login</h1><p>Coming soon...</p></div>;
 
