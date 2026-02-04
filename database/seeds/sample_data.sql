@@ -8,8 +8,8 @@ USE mahletay_app_store;
 -- Default password: Admin@123 (hashed with bcrypt)
 -- =====================================================
 INSERT INTO users (username, email, password_hash, role) VALUES
-('admin', 'admin@orthodoxhymn.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyF7.nnFgdou', 'admin'),
-('moderator', 'moderator@orthodoxhymn.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyF7.nnFgdou', 'moderator');
+('admin', 'admin@orthodoxhymn.com', '$2a$12$.BTfDN9DvTNAbpRx63m6xeRXaKltBRI.90phZkR9TyqakLli.rium', 'admin'),
+('moderator', 'moderator@orthodoxhymn.com', '$2a$12$.BTfDN9DvTNAbpRx63m6xeRXaKltBRI.90phZkR9TyqakLli.rium', 'moderator');
 
 -- =====================================================
 -- Seed App Versions
