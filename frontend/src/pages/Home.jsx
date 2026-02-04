@@ -9,10 +9,19 @@ import { FiDownload, FiStar, FiHeart } from 'react-icons/fi';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import InfiniteCarousel from '../components/common/InfiniteCarousel';
+import GravityHero from '../components/hero/GravityHero';
+import ScrollReveal from '../components/animations/ScrollReveal';
+import './Home.css';
 
-// ... imports
+const Home = () => {
+  return (
+    <div className="home">
+      {/* Physics Driven Hero Section */}
+      <GravityHero />
 
-// Inside Home component:
+      {/* Features Section */}
+      <section className="section features-section">
+        <div className="container">
           <div className="section-header-wrapper">
             <ScrollReveal animation="fade-up">
             <h2 className="section-title text-center">

@@ -1,15 +1,8 @@
-/**
- * Infinite Carousel Component
- * Automatically scrolling horizontal carousel for feature cards
- */
-
-import React, { useEffect, useRef, useState } from 'react';
-import './InfiniteCarousel.css';
-
 const InfiniteCarousel = ({ children, speed = 30, direction = 'left', pauseOnHover = true }) => {
   const [contentWidth, setContentWidth] = useState(0);
   const containerRef = useRef(null);
   const contentRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -24,13 +17,16 @@ const InfiniteCarousel = ({ children, speed = 30, direction = 'left', pauseOnHov
     <div 
       className={`infinite-carousel-container ${pauseOnHover ? 'pause-hover' : ''}`} 
       ref={containerRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div 
         className="infinite-carousel-track" 
         ref={contentRef}
         style={{
           '--animation-duration': `${contentWidth / speed}s`,
-          '--animation-direction': direction === 'left' ? 'normal' : 'reverse'
+          '--animation-direction': direction === 'left' ? 'normal' : 'reverse',
+          animationPlayState: isHovered ? 'paused' : 'running'
         }}
       >
         {duplicatedChildren.map((childSet, index) => (
