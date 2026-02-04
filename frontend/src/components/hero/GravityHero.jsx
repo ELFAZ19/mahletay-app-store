@@ -35,10 +35,10 @@ const GravityHero = () => {
         const dy = mousePos.y - (baseY * containerRef.current?.offsetHeight / 100 || 0);
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Attraction strength (stronger when closer, max 150px reach)
-        const maxDistance = 200;
+        // Stronger attraction (increased radius and pull strength for amazing effect)
+        const maxDistance = 350; // Increased from 200px for wider reach
         const strength = distance < maxDistance ? (maxDistance - distance) / maxDistance : 0;
-        const pullStrength = strength * 40; // Max 40px movement
+        const pullStrength = strength * 80; // Increased from 40px to 80px for dramatic movement
         
         // Calculate pull direction
         const moveX = (dx / distance) * pullStrength || 0;
@@ -48,11 +48,12 @@ const GravityHero = () => {
             left: baseLeft,
             top: baseTop,
             transform: `translate(${moveX}px, ${moveY}px)`,
-            transition: 'transform 0.3s ease-out'
+            transition: 'transform 0.25s ease-out' // Slightly faster response
         };
     };
 
     const particlePositions = [
+        // Original positions
         { left: '10%', top: '15%' },
         { left: '85%', top: '20%' },
         { left: '15%', top: '70%' },
@@ -62,7 +63,23 @@ const GravityHero = () => {
         { left: '75%', top: '50%' },
         { left: '40%', top: '85%' },
         { left: '60%', top: '30%' },
-        { left: '30%', top: '60%' }
+        { left: '30%', top: '60%' },
+        // Additional scattered particles
+        { left: '5%', top: '45%' },
+        { left: '95%', top: '35%' },
+        { left: '20%', top: '25%' },
+        { left: '80%', top: '65%' },
+        { left: '45%', top: '55%' },
+        { left: '65%', top: '15%' },
+        { left: '35%', top: '80%' },
+        { left: '70%', top: '25%' },
+        { left: '12%', top: '90%' },
+        { left: '88%', top: '10%' },
+        { left: '55%', top: '70%' },
+        { left: '42%', top: '20%' },
+        { left: '78%', top: '85%' },
+        { left: '18%', top: '35%' },
+        { left: '92%', top: '55%' }
     ];
 
     return (

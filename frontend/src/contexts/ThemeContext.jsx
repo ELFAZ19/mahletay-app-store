@@ -21,12 +21,8 @@ export const ThemeProvider = ({ children }) => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved;
     
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
-    return 'light';
+    // Default to dark mode for amazing aesthetic
+    return 'dark';
   });
 
   useEffect(() => {
