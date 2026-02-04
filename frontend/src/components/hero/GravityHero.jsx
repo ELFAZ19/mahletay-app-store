@@ -71,13 +71,16 @@ const GravityHero = () => {
             const el = document.getElementById(domId);
             if (!el) return null;
             
+            // Force a reflow to ensure CSS positioning is applied
+            el.offsetHeight;
+            
             const rect = el.getBoundingClientRect();
             const x = rect.left + rect.width / 2;
             const y = rect.top + rect.height / 2;
             
             const body = Bodies.rectangle(x, y, rect.width, rect.height, {
                 restitution: 0.6,
-                frictionAir: 0.015, // Slightly more air resistance for calmer motion
+                frictionAir: 0.015,
                 friction: 0.05,
                 density: options.density || 0.001,
                 render: { visible: false },

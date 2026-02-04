@@ -11,9 +11,6 @@
 
 .gravity-element {
     position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-500px, -500px);
     will-change: transform;
     cursor: grab;
     user-select: none;
@@ -26,8 +23,7 @@
     transition: 
         opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
         filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow 0.3s ease,
-        transform 0.01s linear; /* Keep physics transform instant */
+        box-shadow 0.3s ease;
 }
 
 /* Loaded state - fade in with stagger */
@@ -36,11 +32,11 @@
     filter: blur(0);
 }
 
-.label-element.loaded { animation-delay: 0s; }
-.title-element.loaded { animation-delay: 0.15s; }
-.desc-element.loaded { animation-delay: 0.3s; }
-.btn-element:nth-of-type(4).loaded { animation-delay: 0.45s; }
-.btn-element:nth-of-type(5).loaded { animation-delay: 0.55s; }
+.label-element.loaded { transition-delay: 0s; }
+.title-element.loaded { transition-delay: 0.15s; }
+.desc-element.loaded { transition-delay: 0.3s; }
+.btn-element:nth-of-type(4).loaded { transition-delay: 0.45s; }
+.btn-element:nth-of-type(5).loaded { transition-delay: 0.55s; }
 
 /* Hover state - glow and scale */
 .gravity-element.hovered {
@@ -62,31 +58,43 @@
     cursor: grabbing;
 }
 
-/* Element positioning */
+/* Element positioning - centered initially */
 .label-element {
-    top: 20%;
+    top: 15%;
     left: 50%;
+    transform: translateX(-50%);
 }
 
 .title-element {
-    top: 35%;
+    top: 30%;
     left: 50%;
+    transform: translateX(-50%);
     text-align: center;
 }
 
 .desc-element {
-    top: 55%;
+    top: 52%;
     left: 50%;
-    max-width: 400px;
+    transform: translateX(-50%);
+    max-width: 500px;
     text-align: center;
 }
 
 .btn-element {
-    top: 70%;
+    display: inline-block;
 }
 
-#hero-btn-1 { left: 40%; }
-#hero-btn-2 { left: 60%; }
+#hero-btn-1 { 
+    top: 68%; 
+    left: 50%;
+    transform: translateX(calc(-100% - 10px));
+}
+
+#hero-btn-2 { 
+    top: 68%; 
+    left: 50%;
+    transform: translateX(10px);
+}
 
 /* Sacred badge */
 .sacred-badge {
@@ -163,14 +171,36 @@
 /* Responsive */
 @media (max-width: 768px) {
     .title-element h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
-    #hero-btn-1 { left: 50%; top: 65%; }
-    #hero-btn-2 { left: 50%; top: 75%; }
+    .desc-element {
+        max-width: 85%;
+        font-size: var(--font-size-base);
+    }
+    
+    #hero-btn-1 { 
+        top: 70%; 
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    #hero-btn-2 { 
+        top: 78%; 
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .label-element {
+        top: 12%;
+    }
+    
+    .title-element {
+        top: 28%;
+    }
     
     .desc-element {
-        max-width: 90%;
+        top: 50%;
     }
 }
 
