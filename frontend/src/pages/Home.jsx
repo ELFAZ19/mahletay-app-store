@@ -3,60 +3,20 @@
  * Landing page with sacred hero section
  */
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiDownload, FiStar, FiHeart } from 'react-icons/fi';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
+import GravityHero from '../components/hero/GravityHero';
+import ScrollReveal from '../components/animations/ScrollReveal';
 import './Home.css';
 
 const Home = () => {
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    // Parallax effect on scroll
-    const handleScroll = () => {
-      if (heroRef.current) {
-        const scrolled = window.pageYOffset;
-        heroRef.current.style.transform = `translateY(${scrolled * 0.3}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div className="home">
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-background" ref={heroRef}></div>
-        <div className="container hero-content">
-          <div className="hero-text fade-in-up">
-            <span className="hero-label">✝ Sacred Hymns for Your Spiritual Journey</span>
-            <h1 className="hero-title">
-              Ethiopian Orthodox <br />
-              <span className="text-gold">Hymn Application</span>
-            </h1>
-            <p className="hero-description">
-              Experience the divine beauty of traditional Ethiopian Orthodox hymns. 
-              Download our mobile application and carry the sacred music with you wherever you go.
-            </p>
-            <div className="hero-actions">
-              <Link to="/download">
-                <Button size="large" magnetic variant="primary">
-                  <FiDownload /> Download Latest Version
-                </Button>
-              </Link>
-              <Link to="/about">
-                <Button size="large" variant="outline">
-                  Learn More
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Physics Driven Hero Section */}
+      <GravityHero />
 
       {/* Features Section */}
       <section className="section features-section">
